@@ -1,7 +1,28 @@
-var express = require('express')
-var app = express()
+var express = require("express");
+var path = require("path");
+var func = require("./functions.js");
 
-// respond with "hello world" when a GET request is made to the homepage
+require('dotenv').config()
+
+var app = express();
+
+
 app.get('/', function (req, res) {
-  res.send('hello world')
-})
+  res.sendFile(path.join(__dirname+'/index.html'));
+});
+
+app.get('/api/:term', function (req, res) {
+  var term = req.params.term;
+  var offset = req.query.offset || 0;
+  func.search(term, offset)
+  .then(function(data){
+    res.send(data);
+  })
+  .catch(function(error){
+    res.send(error);
+  });
+});
+
+app.listen(process.env.PORT || 8080, function () {
+  console.log('Node.js listening on port ' + (process.env.PORT || 8080));
+});
