@@ -8,12 +8,22 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname+'/index.html'));
 });
 
-app.get('/api/:term', function (req, res) {
+app.get('/api/search/:term', function (req, res) {
   var term = req.params.term;
   var offset = req.query.offset || 0;
   func.search(term, offset)
   .then(function(data){
     func.save(term);
+    res.send(data);
+  })
+  .catch(function(error){
+    res.send(error);
+  });
+});
+
+app.get('/api/latest', function (req, res) {
+  func.latest()
+  .then(function(data){
     res.send(data);
   })
   .catch(function(error){

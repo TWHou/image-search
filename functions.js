@@ -49,5 +49,23 @@ module.exports = {
           });
         }
       });
+    },
+    latest: function(){
+      return new Promise(function(resolve,reject){
+        mongo.connect(url, function(err, db) {
+          if(err){
+            reject(err);
+          } else {
+            db.collection('image-search').find({},{'_id': 0}).limit(10).toArray(function(err, docs) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(docs.reverse());
+              }
+              db.close();
+            });
+          }
+        });
+      });
     }
 };
